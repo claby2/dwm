@@ -248,6 +248,8 @@ static int xerror(Display *dpy, XErrorEvent *ee);
 static int xerrordummy(Display *dpy, XErrorEvent *ee);
 static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void zoom(const Arg *arg);
+static void focusdir(const Arg *arg);
+static void tagfollowmon(const Arg *arg);
 
 /* variables */
 static const char broken[] = "broken";
@@ -2202,6 +2204,38 @@ zoom(const Arg *arg)
 		if (!c || !(c = nexttiled(c->next)))
 			return;
 	pop(c);
+}
+
+void
+focusdir(const Arg *arg)
+{
+	Client *c = NULL, *i;
+
+	if (selmon->sel) {
+		if (arg->i > 0) {
+			for (c = selmon->sel->next; c && !ISVISIBLE(c); c = c->next);
+		} else {
+			for (i = selmon->clients; i != selmon->sel; i = i->next)
+				if (ISVISIBLE(i))
+					c = i;
+		}
+	}
+
+	if (!selmon->sel || !c) {
+		focusmon(arg);
+	} else if (c){
+		focus(c);
+		restack(selmon);
+	}
+}
+
+void
+tagfollowmon(const Arg *arg)
+{
+	if (selmon->sel && mons->next) {
+		sendmon(selmon->sel, dirtomon(arg->i));
+		focusmon(arg);
+	}
 }
 
 int
