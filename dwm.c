@@ -1905,6 +1905,24 @@ updateclientlist()
 				(unsigned char *) &(c->win), 1);
 }
 
+#ifdef XINERAMA
+void
+sortscreens(XineramaScreenInfo *screens, int n)
+{
+	int i, j;
+	XineramaScreenInfo *screen = ecalloc(1, sizeof(XineramaScreenInfo));
+
+	for (i = 0; i < n; i++)
+		for (j = i + 1; j < n; j++)
+			if (screens[i].x_org > screens[j].x_org) {
+				memcpy(&screen[0], &screens[i], sizeof(XineramaScreenInfo));
+				memcpy(&screens[i], &screens[j], sizeof(XineramaScreenInfo));
+				memcpy(&screens[j], &screen[0], sizeof(XineramaScreenInfo));
+			}
+	XFree (screen);
+}
+#endif /* XINERAMA */
+
 int
 updategeom(void)
 {
@@ -1926,6 +1944,7 @@ updategeom(void)
 				memcpy(&unique[j++], &info[i], sizeof(XineramaScreenInfo));
 		XFree(info);
 		nn = j;
+		sortscreens(unique, nn);
 		if (n <= nn) { /* new monitors available */
 			for (i = 0; i < (nn - n); i++) {
 				for (m = mons; m && m->next; m = m->next);
