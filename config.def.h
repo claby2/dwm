@@ -110,7 +110,7 @@ static Key keys[] = {
 	{ MODKEY|Mod1Mask,              XK_l,      tagfollowmon,   {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_s,      spawn,          SHCMD("flameshot gui") }, /* Screenshot */
 	{ MODKEY|ControlMask|ShiftMask, XK_s,      spawn,          SHCMD("flameshot screen -c") }, /* Screenshot full */
-	{ MODKEY|ShiftMask,             XK_p,      spawn,          SHCMD("spt playback --toggle && notify-send \"spt\" \"Toggled play/pause\"") }, /* Toggle pause */
+	{ MODKEY|ShiftMask,             XK_p,      spawn,          SHCMD("notify-send \"spotify-tui\" \"$(spt playback --toggle)\"") }, /* Toggle pause */
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
